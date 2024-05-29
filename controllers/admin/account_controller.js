@@ -68,7 +68,7 @@ exports.login = async (req, res) => {
 
 exports.profile = async (req, res) => {
     const { id_admin } = req.decoded
-    connection.query(`SELECT * FROM admin WHERE id_admin=?`, id_admin,
+    connection.query(`SELECT * FROM admin WHERE id_admin=? `, id_admin,
         (error, rows) => {
             if (error) {
                 console.log(error);
@@ -144,7 +144,7 @@ exports.editPassword = async (req, res) => {
                 } else if (new_password != confirmation_password) {
                     return res.status(400).json({ status: 400, message: `Konfirmasi password salah` })
                 } else {
-                    connection.query(`UPDATE admin SET password=? WHERE id_admin=?`, [new_password,id_admin],
+                    connection.query(`UPDATE admin SET password=? WHERE id_admin=?`, [md5(new_password),id_admin],
                         (error, rows, result) => {
                             if (error) {
                                 console.log(error);

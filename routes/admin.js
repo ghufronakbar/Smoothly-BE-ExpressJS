@@ -5,7 +5,7 @@ module.exports = function (app) {
   const AdminController = require("../controllers/admin");
   const AdminVerification = require("../middleware/verifikasi-admin");
 
-  //LOGIN
+  // ACCOUNT CONTROLLER
   app.route(`/api/admin/login`)
     .post(AdminController.account_controller.login);
 
@@ -19,34 +19,34 @@ module.exports = function (app) {
     .put(AdminVerification, AdminController.account_controller.editPassword);
 
 
-  // ORGANIZATIONS
-  app.route(`/api/admin/organizations`)
-    .get(AdminVerification, AdminController.layanan_controller.orgShow);
+  // LAYANAN CONTROLLER
+  app.route(`/api/admin/layanan`)
+    .get(AdminVerification, AdminController.layanan_controller.showLayanan);
 
-  app.route(`/api/admin/organization/:id_organization`)
-    .get(AdminVerification, AdminController.layanan_controller.orgShowId);
+  app.route(`/api/admin/layanan/:id_layanan`)
+    .get(AdminVerification, AdminController.layanan_controller.showLayananId);
 
-  app.route(`/api/admin/organization/approve/:id_organization`)
-    .put(AdminVerification, AdminController.layanan_controller.orgApprove);
+  app.route(`/api/admin/layanan`)
+    .post(AdminVerification, AdminController.layanan_controller.addLayanan);
 
-  app.route(`/api/admin/organization/banned/:id_organization`)
-    .put(AdminVerification, AdminController.layanan_controller.orgBanned);
+  app.route(`/api/admin/layanan/:id_layanan`)
+    .put(AdminVerification, AdminController.layanan_controller.editLayanan);
 
-  app.route(`/api/admin/organization/reject/:id_organization`)
-    .delete(AdminVerification, AdminController.layanan_controller.orgReject);
+  app.route(`/api/admin/layanan/:id_layanan`)
+    .delete(AdminVerification, AdminController.layanan_controller.deleteLayanan);
 
   // EVENTS
-  app.route(`/api/admin/events`)
-    .get(AdminVerification, AdminController.event_controller.eventShow);
+  // app.route(`/api/admin/events`)
+  //   .get(AdminVerification, AdminController.event_controller.eventShow);
 
-  app.route(`/api/admin/event/:id_event`)
-    .get(AdminVerification, AdminController.event_controller.eventShowId);
+  // app.route(`/api/admin/event/:id_event`)
+  //   .get(AdminVerification, AdminController.event_controller.eventShowId);
 
-  app.route(`/api/admin/event/reject/:id_event`)
-    .put(AdminVerification, AdminController.event_controller.eventReject);
+  // app.route(`/api/admin/event/reject/:id_event`)
+  //   .put(AdminVerification, AdminController.event_controller.eventReject);
 
-  app.route(`/api/admin/event/approve/:id_event`)
-    .put(AdminVerification, AdminController.event_controller.eventApprove);
+  // app.route(`/api/admin/event/approve/:id_event`)
+  //   .put(AdminVerification, AdminController.event_controller.eventApprove);
 
 };
 
