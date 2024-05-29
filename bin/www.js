@@ -15,7 +15,7 @@ app.use(cors());
 const routesAdmin = require("../routes/admin");
 routesAdmin(app);
 
-const routesUser = require("../routes/user");
+const routesUser = require("../routes/pelanggan");
 routesUser(app);
 
 app.use('/images/profile', express.static(path.join(__dirname, '../images/profile')));

@@ -1,6 +1,5 @@
 'use strict';
 
-const response = require('../../res');
 const connection = require('../../connection');
 const md5 = require('md5');
 const jwt = require('jsonwebtoken');
@@ -110,7 +109,7 @@ exports.profile = function (req, res) {
         console.log(error);
       } else {
         console.log(rows);
-        response.ok(rows, res)
+        return res.json({rows})
       }
     });
 };

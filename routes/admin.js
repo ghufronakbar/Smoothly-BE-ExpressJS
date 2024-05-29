@@ -9,21 +9,31 @@ module.exports = function (app) {
   app.route(`/api/admin/login`)
     .post(AdminController.account_controller.login);
 
+  app.route(`/api/admin/profile`)
+    .get(AdminVerification, AdminController.account_controller.profile);
+
+  app.route(`/api/admin/profile`)
+    .put(AdminVerification, AdminController.account_controller.editProfile);
+
+  app.route(`/api/admin/profile/password`)
+    .put(AdminVerification, AdminController.account_controller.editPassword);
+
+
   // ORGANIZATIONS
   app.route(`/api/admin/organizations`)
-    .get(AdminVerification, AdminController.organization_controller.orgShow);
+    .get(AdminVerification, AdminController.layanan_controller.orgShow);
 
   app.route(`/api/admin/organization/:id_organization`)
-    .get(AdminVerification, AdminController.organization_controller.orgShowId);
+    .get(AdminVerification, AdminController.layanan_controller.orgShowId);
 
   app.route(`/api/admin/organization/approve/:id_organization`)
-    .put(AdminVerification, AdminController.organization_controller.orgApprove);
+    .put(AdminVerification, AdminController.layanan_controller.orgApprove);
 
   app.route(`/api/admin/organization/banned/:id_organization`)
-    .put(AdminVerification, AdminController.organization_controller.orgBanned);
+    .put(AdminVerification, AdminController.layanan_controller.orgBanned);
 
   app.route(`/api/admin/organization/reject/:id_organization`)
-    .delete(AdminVerification, AdminController.organization_controller.orgReject);
+    .delete(AdminVerification, AdminController.layanan_controller.orgReject);
 
   // EVENTS
   app.route(`/api/admin/events`)

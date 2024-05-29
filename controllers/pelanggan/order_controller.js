@@ -1,6 +1,5 @@
 'use strict';
 
-const response = require('../../res');
 const connection = require('../../connection');
 const md5 = require('md5');
 const jwt = require('jsonwebtoken');

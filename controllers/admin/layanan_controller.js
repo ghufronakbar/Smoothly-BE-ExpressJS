@@ -1,6 +1,5 @@
 'use strict';
 
-var response = require('../../res');
 var connection = require('../../connection');
 var md5 = require('md5');
 var ip = require('ip');
