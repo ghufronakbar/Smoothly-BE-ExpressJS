@@ -5,6 +5,28 @@ const md5 = require('md5');
 const jwt = require('jsonwebtoken');
 const config = require('../../config/secret');
 const ip = require('ip');
+const multer = require('multer');
+const crypto = require('crypto');
+const fs = require('fs');
+const path = require('path')
+
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, 'images/profile/');
+  },
+  filename: function (req, file, cb) {
+    // Mendapatkan ekstensi file
+    const ext = file.originalname.split('.').pop();
+    // Membuat string acak sepanjang 6 karakter
+    const randomString = crypto.randomBytes(3).toString('hex');
+    // Menggabungkan nama file asli dengan string acak dan ekstensi
+    const newFilename = file.originalname.replace(`.${ext}`, `_${randomString}.${ext}`);
+    cb(null, newFilename);
+  }
+});
+
+const upload = multer({ storage: storage }).single('foto_profile');
+
 
 // LOGIN
 exports.login = function (req, res) {
@@ -14,7 +36,7 @@ exports.login = function (req, res) {
     return res.json({ status: 400, message: "Email and password are required" });
   }
 
-  const query = "SELECT email, id_user FROM users WHERE password=? AND email=?";
+  const query = "SELECT email, id_pelanggan FROM pelanggan WHERE password=? AND email=?";
   const values = [md5(password), email];
 
   connection.query(query, values, function (error, rows) {
@@ -23,9 +45,9 @@ exports.login = function (req, res) {
       return res.status(500).json({ success: false, message: "Internal server error" });
     }
     if (rows.length === 1) {
-      const id_user = rows[0].id_user;
-      const token = jwt.sign({ id_user }, config.secret, { expiresIn: 1440 * 4 });
-      const data = { id_user, token, ip_address: ip.address() };
+      const id_pelanggan = rows[0].id_pelanggan;
+      const token = jwt.sign({ id_pelanggan }, config.secret, { expiresIn: 1440 * 4 });
+      const data = { id_pelanggan, token, ip_address: ip.address() };
 
       const insertQuery = "INSERT INTO akses_token SET ?";
 
@@ -39,7 +61,7 @@ exports.login = function (req, res) {
           success: true,
           message: "Token JWT Generated!",
           token: token,
-          currUser: id_user
+          currUser: id_pelanggan
         });
       });
     } else {
@@ -49,12 +71,12 @@ exports.login = function (req, res) {
 };
 
 exports.register = async (req, res) => {
-  const { fullname, email, phone, password, confirmation_password } = req.body
-
-  if (!fullname || !email || !phone || !password || !confirmation_password) {
-    return res.status(400).json({ status: 400, message: "Field can't blank" });
+  const { nama, alamat, email, no_telepon, password, confirmation_password } = req.body
+  console.log({ nama, alamat, email, no_telepon, password, confirmation_password })
+  if (!nama || !email || !no_telepon || !password || !confirmation_password || !alamat) {
+    return res.status(400).json({ status: 400, message: `Field tidak boleh kosong` })
   } else {
-    connection.query(`SELECT * FROM users WHERE email=?`, [email],
+    connection.query(`SELECT * FROM pelanggan WHERE email=?`, [email],
       function (error, rows, result) {
         if (error) {
           console.log(error);
@@ -62,23 +84,23 @@ exports.register = async (req, res) => {
         } else {
           const uniqueEmail = rows.length
           if (uniqueEmail) {
-            return res.status(400).json({ status: 400, message: `Email ${email} already exist` });
+            return res.status(400).json({ status: 400, message: `Email ${email} sudah terdaftar` });
           } else {
-            connection.query(`SELECT * FROM users WHERE phone=?`, [phone],
+            connection.query(`SELECT * FROM pelanggan WHERE no_telepon=?`, [no_telepon],
               (error, r, result) => {
                 if (error) {
                   console.log(error);
                   return res.status(500).json({ status: 500, message: "Internal Server Error" });
                 } else {
-                  const uniquePhone = r.length
-                  if (uniquePhone) {
-                    return res.status(400).json({ status: 400, message: `Phone ${phone} already exist` });
+                  const uniqueno_telepon = r.length
+                  if (uniqueno_telepon) {
+                    return res.status(400).json({ status: 400, message: `Nomor ${no_telepon} sudah terdaftar` });
                   } else {
                     if (password != confirmation_password) {
-                      return res.status(402).json({ status: 402, message: "Confirmation password doesn't match" });
+                      return res.status(400).json({ status: 400, message: `Konfirmasi password salah` })
                     } else {
-                      const qRegiter = `INSERT INTO users(fullname,email,phone,password) VALUES(?,?,?,?)`
-                      const vRegister = [fullname, email, phone, md5(password)]
+                      const qRegiter = `INSERT INTO pelanggan(nama,email,no_telepon,password,alamat) VALUES(?,?,?,?,?)`
+                      const vRegister = [nama, email, no_telepon, md5(password), alamat]
                       connection.query(qRegiter, vRegister,
                         function (error, rows, result) {
                           if (error) {
@@ -101,128 +123,150 @@ exports.register = async (req, res) => {
   }
 }
 
-exports.profile = function (req, res) {
-  const id_user = req.decoded.id_user
-  connection.query(`SELECT * FROM users WHERE id_user=?`, id_user,
-    function (error, rows, fields) {
+exports.profile = async (req, res) => {
+  const id_pelanggan = req.decoded.id_pelanggan;
+
+  connection.query(`SELECT * FROM pelanggan WHERE id_pelanggan=?`, [id_pelanggan], function (error, rows, fields) {
+    if (error) {
+      console.log(error);
+      return res.status(500).json({ status: 500, message: "Internal Server Error" });
+    } else {
+      if (rows.length > 0) {
+        const profileData = rows.map(row => ({
+          id_pelanggan: row.id_pelanggan,
+          nama: row.nama,
+          alamat: row.alamat,
+          email: row.email,
+          no_telepon: row.no_telepon,
+          foto_profil: row.foto_profil ? process.env.BASE_URL + `/images/profile/` + row.foto_profil : process.env.BASE_URL + `/images/profile/default_user.png`,
+          created_at: row.created_at,
+          updated_at: row.updated_at
+        }));
+
+        return res.status(200).json({ status: 200, rows: profileData });
+      } else {
+        return res.status(404).json({ status: 404, message: "Profile not found" });
+      }
+    }
+  });
+};
+
+
+exports.editProfile = async (req, res) => {
+  upload(req, res, function (err) {
+    if (err instanceof multer.MulterError) {
+      console.log(err);
+      return res.status(500).json({ success: false, message: 'Failed to upload image.' });
+    } else if (err) {
+      console.log(err);
+      return res.status(500).json({ success: false, message: 'An unexpected error occurred.' });
+    }
+
+    const id_pelanggan = req.decoded.id_pelanggan;
+    const { nama, alamat, email, no_telepon } = req.body;
+    const foto_profil = req.file ? req.file.filename : null;
+
+    if (!nama || !email || !no_telepon || !alamat) {
+      return res.status(400).json({ status: 400, message: `Field tidak boleh kosong` });
+    } else {
+      connection.query(`SELECT email, no_telepon, foto_profil FROM pelanggan WHERE id_pelanggan=?`, [id_pelanggan], (error, r) => {
+        if (error) {
+          console.log(error);
+          return res.status(500).json({ status: 500, message: "Internal Server Error" });
+        } else {
+          const currentFotoProfil = r[0].foto_profil;
+
+          if (foto_profil) {
+            if (currentFotoProfil) {
+              // Hapus file foto profil lama
+              const oldPath = path.join(__dirname, '../../images/profile', currentFotoProfil);
+              fs.unlink(oldPath, (err) => {
+                if (err) console.log(err);
+              });
+            }
+
+            connection.query(`UPDATE pelanggan SET foto_profil=? WHERE id_pelanggan=?`, [foto_profil, id_pelanggan], (error) => {
+              if (error) {
+                console.log(error);
+                return res.status(500).json({ status: 500, message: "Internal Server Error" });
+              }
+            });
+          }
+
+          connection.query(`SELECT * FROM pelanggan WHERE (email=? OR no_telepon=?) AND id_pelanggan<>?`, [email, no_telepon, id_pelanggan], (error, rows) => {
+            if (error) {
+              console.log(error);
+              return res.status(500).json({ status: 500, message: "Internal Server Error" });
+            } else {
+              if (rows.length > 0) {
+                const existingUser = rows[0];
+                if (existingUser.email === email) {
+                  return res.status(401).json({ status: 401, message: `Email ${email} sudah terdaftar` });
+                }
+                if (existingUser.no_telepon === no_telepon) {
+                  return res.status(401).json({ status: 401, message: `Nomor telepon ${no_telepon} sudah terdaftar` });
+                }
+              }
+
+              const qEditProfile = `UPDATE pelanggan SET nama=?, email=?, no_telepon=?, alamat=? WHERE id_pelanggan=?`;
+              const vEditProfile = [nama, email, no_telepon, alamat, id_pelanggan];
+              connection.query(qEditProfile, vEditProfile, (error) => {
+                if (error) {
+                  console.log(error);
+                  return res.status(500).json({ status: 500, message: "Internal Server Error" });
+                } else {
+                  return res.status(200).json({ status: 200, message: "Berhasil mengedit profile" });
+                }
+              });
+            }
+          });
+        }
+      });
+    }
+  });
+};
+
+
+exports.editPassword = async (req, res) => {
+  const { old_password, new_password, confirmation_password } = req.body;
+  const id_pelanggan = req.decoded.id_pelanggan;
+
+  if (!old_password || !new_password || !confirmation_password) {
+    return res.status(400).json({ status: 400, message: "Field can't be blank" });
+  }
+
+  if (new_password !== confirmation_password) {
+    return res.status(400).json({ status: 400, message: "Password baru dan konfirmasi password tidak cocok" });
+  }
+
+  connection.query(`
+    SELECT password FROM pelanggan WHERE id_pelanggan = ?`,
+    [id_pelanggan],
+    (error, rows) => {
       if (error) {
         console.log(error);
-      } else {
-        console.log(rows);
-        return res.json({rows})
-      }
-    });
-};
+        return res.status(500).json({ status: 500, message: "Internal Server Error" });
+      } 
 
-exports.editProfile = function (req, res) {
-  const id_user = req.decoded.id_user;
-  const { fullname, email, phone } = req.body;
-
-  if (!fullname || !email || !phone) {
-    return res.status(400).json({ status: 400, message: "Field can't blank" });
-  } else {
-    connection.query(`SELECT email, phone FROM users WHERE id_user=?`, id_user,
-      function (error, r, result) {
-        if (error) {
-          console.log(error);
-          return res.status(500).json({ status: 500, message: "Internal Server Error" });
-        } else {
-          const currentEmail = r[0].email;
-          const currentPhone = r[0].phone;
-
-          if (email == currentEmail) {
-            const qEditProfile = `UPDATE users SET fullname=?,phone=? WHERE id_user=?`;
-            const vEditProfile = [fullname, phone, id_user];
-            connection.query(qEditProfile, vEditProfile,
-              function (error, rows, result) {
-                if (error) {
-                  console.log(error);
-                  return res.status(500).json({ status: 500, message: "Internal Server Error" });
-                } else {
-                  const message = phone === currentPhone ?
-                    "Update profile successfully, phone not changed" :
-                    "Update profile successfully";
-                  return res.status(200).json({ status: 200, message });
-                }
-              }
-            );
-          } else {
-            connection.query(`SELECT * FROM users WHERE email=? AND NOT email=?`, [email, currentEmail],
-              function (error, rows, result) {
-                if (error) {
-                  console.log(error);
-                  return res.status(500).json({ status: 500, message: "Internal Server Error" });
-                } else {
-                  const uniqueEmail = rows.length;
-                  if (uniqueEmail) {
-                    return res.status(401).json({ status: 401, message: `Email ${email} already exist` });
-                  } else {
-                    const qEditProfile = `UPDATE users SET fullname=?, email=?,phone=? WHERE id_user=?`;
-                    const vEditProfile = [fullname, email, phone, id_user];
-                    connection.query(qEditProfile, vEditProfile,
-                      function (error, rows, result) {
-                        if (error) {
-                          console.log(error);
-                          return res.status(500).json({ status: 500, message: "Internal Server Error" });
-                        } else {
-                          const message = phone === currentPhone ?
-                            "Update profile successfully, phone not changed" :
-                            "Update profile successfully";
-                          return res.status(200).json({ status: 200, message });
-                        }
-                      }
-                    );
-                  }
-                }
-              }
-            );
-          }
-        }
-      }
-    );
-  }
-};
-
-
-
-//Post password Users match
-exports.editPassword = async (req, res) => {
-  const { old_password, new_password } = req.body
-  const id_user = req.decoded.id_user;
-
-  if (!(old_password || new_password)) {
-    return res.status(400).json({ status: 400, message: "Field can't be blank" });
-  } else {
-    connection.query(`
-    SELECT password FROM users WHERE id_user = ?`,
-      [id_user],
-      function (error, rows, fields) {
-        if (error) {
-          console.log(error);
-          return res.status(500).json({ status: 500, message: "Internal Server Error" });
-        } else {
-          if (rows.length > 0) {
-            if (rows[0].password === md5(old_password)) {
-              connection.query(`
-                        UPDATE users SET password=? WHERE id_user=?`,
-                [md5(new_password), id_user],
-                function (error, rows, fields) {
-                  if (error) {
-                    console.log(error);
-                    return res.status(500).json({ status: 500, message: "Internal Server Error" });
-                  } else {
-                    return res.status(200).json({ status: 200, message: "Update password successfully" });
-                  }
-                }
-              );
-            } else {
-              return res.status(400).json({ status: 400, message: "Password not match" });
+      if (rows.length > 0) {
+        if (rows[0].password === md5(old_password)) {
+          connection.query(`
+            UPDATE pelanggan SET password=? WHERE id_pelanggan=?`,
+            [md5(new_password), id_pelanggan],
+            (error) => {
+              if (error) {
+                console.log(error);
+                return res.status(500).json({ status: 500, message: "Internal Server Error" });
+              } 
+              return res.status(200).json({ status: 200, message: "Berhasil mengedit password" });
             }
-          } else {
-            return res.status(400).json({ status: 400, message: "User not found" });
-          }
+          );
+        } else {
+          return res.status(400).json({ status: 400, message: "Password lama tidak cocok" });
         }
+      } else {
+        return res.status(400).json({ status: 400, message: "Pengguna tidak ditemukan" });
       }
-    );
-  }
+    }
+  );
 };

@@ -75,7 +75,7 @@ exports.showRiwayat = async (req, res) => {
                         alamat: row.alamat,
                         email: row.email,
                         no_telepon: row.no_telepon,
-                        foto_profil: process.env.BASE_URL + `/images/profile/` + row.foto_profil
+                        foto_profil: row.foto_profil? process.env.BASE_URL +`/images/profile/`+ row.foto_profil :  process.env.BASE_URL +`/images/profile/default_user.png`,
                     }
                 });
             });
@@ -158,7 +158,7 @@ exports.showRiwayatId = async (req, res) => {
                                     alamat: row.alamat,
                                     email: row.email,
                                     no_telepon: row.no_telepon,
-                                    foto_profil: process.env.BASE_URL + `/images/profile/` + row.foto_profil
+                                    foto_profil: row.foto_profil? process.env.BASE_URL +`/images/profile/`+ row.foto_profil :  process.env.BASE_URL +`/images/profile/default_user.png`,
                                 }
                             });
                         });
