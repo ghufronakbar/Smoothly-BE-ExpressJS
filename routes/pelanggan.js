@@ -22,12 +22,21 @@ module.exports = function (app) {
     .put(PelangganVerification, PelangganController.account_controller.editPassword);
 
 
-    // LAYANAN CONTROLLER
-    app.route(`/api/pelanggan/layanan`)
+  // LAYANAN CONTROLLER
+  app.route(`/api/pelanggan/layanan`)
     .get(PelangganVerification, PelangganController.layanan_controller.showLayanan);
 
   app.route(`/api/pelanggan/layanan/:id_layanan`)
     .get(PelangganVerification, PelangganController.layanan_controller.showLayananId);
+
+
+  // RIWAYAT CONTROLLER
+  app.route(`/api/pelanggan/riwayat`)
+    .get(PelangganVerification, PelangganController.riwayat_controller.showRiwayat);
+
+  app.route(`/api/pelanggan/riwayat/:id_pemesanan`)
+    .get(PelangganVerification, PelangganController.riwayat_controller.showRiwayatId);
+
 
 };
 
