@@ -35,6 +35,7 @@ module.exports = function (app) {
   app.route(`/api/admin/layanan/:id_layanan`)
     .delete(AdminVerification, AdminController.layanan_controller.deleteLayanan);
 
+
   // RIWAYAT CONTROLLER
   app.route(`/api/admin/riwayat`)
     .get(AdminVerification, AdminController.riwayat_controller.showRiwayat);
@@ -42,7 +43,16 @@ module.exports = function (app) {
   app.route(`/api/admin/riwayat/:id_pemesanan`)
     .get(AdminVerification, AdminController.riwayat_controller.showRiwayatId);
 
-    //
+
+  // TRANSAKSI CONTROLLER
+  app.route(`/api/admin/transaksi/reject/:id_pemesanan`)
+    .put(AdminVerification, AdminController.transaksi_controller.rejectTransaksi);
+
+  app.route(`/api/admin/transaksi/process/:id_pemesanan`)
+    .put(AdminVerification, AdminController.transaksi_controller.processTransaksi);
+
+  app.route(`/api/admin/transaksi/finish/:id_pemesanan`)
+    .put(AdminVerification, AdminController.transaksi_controller.finishTransaksi);
 
 };
 
