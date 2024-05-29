@@ -3,6 +3,14 @@
 const connection = require('../../connection');
 
 exports.showRiwayat = async (req, res) => {
+    const { status_pesanan } = req.query
+    let queryStatusPesanan = ``
+    let queryParams = [];
+
+    if (status_pesanan !== undefined && status_pesanan !== null && status_pesanan !== '') {
+        queryStatusPesanan = 'WHERE ps.status_pemesanan = ?';
+        queryParams.push(status_pesanan);
+    }
     const qShowRiwayat = `SELECT ps.id_pemesanan, ps.jumlah_sepatu, ps.catatan_pelanggan, ps.longitude,
                             ps.latitude, ps.status_pemesanan, ps.created_at AS tanggal_pemesanan,
                             l.nama_layanan, l.deskripsi, l.harga, t.tanggal_masuk, t.tanggal_keluar,
@@ -13,9 +21,11 @@ exports.showRiwayat = async (req, res) => {
                           LEFT JOIN transaksi AS t ON ps.id_pemesanan = t.id_pemesanan
                           LEFT JOIN pembayaran AS pb ON ps.id_pemesanan = pb.id_pemesanan
                           LEFT JOIN pelanggan AS pl ON ps.id_pelanggan = pl.id_pelanggan
-                          ORDER BY ps.id_pemesanan DESC`;
+                          ${queryStatusPesanan}
+                          ORDER BY ps.id_pemesanan DESC
+                          `;
 
-    connection.query(qShowRiwayat, (error, rows) => {
+    connection.query(qShowRiwayat, queryParams, (error, rows) => {
         if (error) {
             console.log(error);
             return res.status(500).json({ status: 500, message: "Internal Server Error" });
@@ -76,16 +86,16 @@ exports.showRiwayat = async (req, res) => {
 
 
 exports.showRiwayatId = async (req, res) => {
-    const {id_pemesanan} = req.params
+    const { id_pemesanan } = req.params
     const qValidate = `SELECT id_pemesanan FROM pemesanan WHERE id_pemesanan=?`
-    connection.query(qValidate,id_pemesanan,(error, rows) => {
+    connection.query(qValidate, id_pemesanan, (error, rows) => {
         if (error) {
             console.log(error);
             return res.status(500).json({ status: 500, message: "Internal Server Error" });
         } else {
             if (rows.length === 0) {
                 return res.status(404).json({ status: 404, message: `Tidak ada data` })
-            }else{
+            } else {
                 const qShowRiwayatId = `SELECT ps.id_pemesanan, ps.jumlah_sepatu, ps.catatan_pelanggan, ps.longitude,
                                         ps.latitude, ps.status_pemesanan, ps.created_at AS tanggal_pemesanan,
                                         l.nama_layanan, l.deskripsi, l.harga, t.tanggal_masuk, t.tanggal_keluar,
@@ -97,8 +107,8 @@ exports.showRiwayatId = async (req, res) => {
                                       LEFT JOIN pembayaran AS pb ON ps.id_pemesanan = pb.id_pemesanan
                                       LEFT JOIN pelanggan AS pl ON ps.id_pelanggan = pl.id_pelanggan
                                       WHERE ps.id_pemesanan=?`;
-            
-                connection.query(qShowRiwayatId,id_pemesanan, (error, rows) => {
+
+                connection.query(qShowRiwayatId, id_pemesanan, (error, rows) => {
                     if (error) {
                         console.log(error);
                         return res.status(500).json({ status: 500, message: "Internal Server Error" });
