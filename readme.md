@@ -8,25 +8,25 @@ Using Express JS as Backend Services, MySQL as Database
 
 ## Installation
 
-Installing packages:
+- Installing packages:
 
 ```bash
   npm install
 ```
 
-   If you using local environment, renaming .env.example to .env. Customize with your configuration. 
+   - If you using local environment, renaming .env.example to .env. Customize with your configuration. 
 
-   Make sure MySQL is turned on in XAMPP control center.
+   - Make sure MySQL is turned on in XAMPP control center.
 
-   Import smoothly.sql to your database.
+   - Import smoothly.sql to your database.
 
-   Run your project with:
+   - Run your project with:
 
    
 ```bash
   node bin/www
 ```
-Enjoy your programs!
+- Enjoy your programs!
 
 
 ## Authors
