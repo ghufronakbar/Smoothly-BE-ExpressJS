@@ -35,18 +35,13 @@ module.exports = function (app) {
   app.route(`/api/admin/layanan/:id_layanan`)
     .delete(AdminVerification, AdminController.layanan_controller.deleteLayanan);
 
-  // EVENTS
-  // app.route(`/api/admin/events`)
-  //   .get(AdminVerification, AdminController.event_controller.eventShow);
+  // RIWAYAT CONTROLLER
+  app.route(`/api/admin/riwayat`)
+    .get(AdminVerification, AdminController.riwayat_controller.showRiwayat);
 
-  // app.route(`/api/admin/event/:id_event`)
-  //   .get(AdminVerification, AdminController.event_controller.eventShowId);
+  app.route(`/api/admin/riwayat/:id_pemesanan`)
+    .get(AdminVerification, AdminController.riwayat_controller.showRiwayatId);
 
-  // app.route(`/api/admin/event/reject/:id_event`)
-  //   .put(AdminVerification, AdminController.event_controller.eventReject);
-
-  // app.route(`/api/admin/event/approve/:id_event`)
-  //   .put(AdminVerification, AdminController.event_controller.eventApprove);
 
 };
 
