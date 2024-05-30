@@ -63,7 +63,7 @@ Run the npm install command to install all necessary dependencies.
 
 - Environment Configuration:
 
-Change the .env.example file to .env and customize it with your environment configuration, including database information and other settings.
+-- Change the .env.example file to .env and customize it with your environment configuration, including database information and other settings.
 
 - Make sure MySQL is turned on in XAMPP control center.
 
