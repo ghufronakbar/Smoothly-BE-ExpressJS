@@ -144,7 +144,7 @@ exports.editPassword = async (req, res) => {
                 } else if (new_password != confirmation_password) {
                     return res.status(400).json({ status: 400, message: `Konfirmasi password salah` })
                 } else {
-                    connection.query(`UPDATE admin SET password=? WHERE id_admin=?`, [md5(new_password),id_admin],
+                    connection.query(`UPDATE admin SET password=? WHERE id_admin=?`, [md5(new_password), id_admin],
                         (error, rows, result) => {
                             if (error) {
                                 console.log(error);
@@ -155,6 +155,21 @@ exports.editPassword = async (req, res) => {
                         }
                     )
                 }
+            }
+        }
+    )
+}
+
+
+exports.editLocation = async (req, res) => {
+    const { toko_latitude, toko_longitude } = req.body
+    connection.query(`UPDATE admin SET toko_latitude=?,toko_longitude=?`, [toko_latitude, toko_longitude],
+        (error, rows, result) => {
+            if (error) {
+                console.log(error);
+                return res.status(500).json({ status: 500, message: "Internal Server Error" });
+            } else {
+                return res.status(200).json({ status: 200, message: `Berhasil mengedit lokasi toko` })
             }
         }
     )

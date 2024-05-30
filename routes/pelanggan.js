@@ -42,6 +42,9 @@ module.exports = function (app) {
     app.route(`/api/pelanggan/transaksi/make`)
     .post(PelangganVerification, PelangganController.transaksi_controller.makeTransaksi);
 
+    app.route(`/api/pelanggan/transaksi/pay/:id_pemesanan`)
+    .put(PelangganVerification, PelangganController.transaksi_controller.payTransaksi);
+
 
 };
 

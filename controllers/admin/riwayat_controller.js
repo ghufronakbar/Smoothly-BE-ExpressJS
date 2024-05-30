@@ -66,7 +66,7 @@ exports.showRiwayat = async (req, res) => {
                         tanggal_keluar: row.tanggal_keluar
                     },
                     pembayaran: {
-                        bukti_pembayaran: process.env.BASE_URL + `/images/bukti-pembayaran/` + row.bukti_pembayaran,
+                        bukti_pembayaran:row.bukti_pembayaran? process.env.BASE_URL + `/images/bukti-pembayaran/` + row.bukti_pembayaran:null,
                         metode_pembayaran: row.metode_pembayaran,
                         tanggal_pembayaran: row.tanggal_pembayaran
                     },
@@ -149,7 +149,7 @@ exports.showRiwayatId = async (req, res) => {
                                     tanggal_keluar: row.tanggal_keluar
                                 },
                                 pembayaran: {
-                                    bukti_pembayaran: process.env.BASE_URL + `/images/bukti-pembayaran/` + row.bukti_pembayaran,
+                                    bukti_pembayaran:row.bukti_pembayaran? process.env.BASE_URL + `/images/bukti-pembayaran/` + row.bukti_pembayaran:null,
                                     metode_pembayaran: row.metode_pembayaran,
                                     tanggal_pembayaran: row.tanggal_pembayaran
                                 },

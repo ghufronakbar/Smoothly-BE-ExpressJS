@@ -18,6 +18,9 @@ module.exports = function (app) {
   app.route(`/api/admin/profile/password`)
     .put(AdminVerification, AdminController.account_controller.editPassword);
 
+    app.route(`/api/admin/location`)
+    .put(AdminVerification, AdminController.account_controller.editLocation);
+
 
   // LAYANAN CONTROLLER
   app.route(`/api/admin/layanan`)
