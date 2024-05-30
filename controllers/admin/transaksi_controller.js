@@ -49,7 +49,7 @@ exports.processTransaksi = async (req, res) => {
                                 return res.status(500).json({ status: 500, message: "Internal Server Error" });
                             } else {
                                 const qInsertTransaksi = `INSERT INTO transaksi(id_pemesanan,tanggal_masuk) VALUES(?,?)`
-                                var currentdate = new Date();
+                                const currentdate = new Date();
                                 const vInsertTransaksi = [id_pemesanan, currentdate]
                                 connection.query(qInsertTransaksi, vInsertTransaksi,
                                     (error, rows) => {
@@ -90,7 +90,7 @@ exports.finishTransaksi = async (req, res) => {
                                 return res.status(500).json({ status: 500, message: "Internal Server Error" });
                             } else {
                                 const qInsertTransaksi = `UPDATE transaksi SET tanggal_keluar=? WHERE id_pemesanan=?`
-                                var currentdate = new Date();
+                                const currentdate = new Date();
                                 const vInsertTransaksi = [currentdate, id_pemesanan]
                                 connection.query(qInsertTransaksi, vInsertTransaksi,
                                     (error, rows) => {

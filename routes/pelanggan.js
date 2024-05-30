@@ -38,5 +38,10 @@ module.exports = function (app) {
     .get(PelangganVerification, PelangganController.riwayat_controller.showRiwayatId);
 
 
+    // TRANSAKSI CONTROLLER
+    app.route(`/api/pelanggan/transaksi/make`)
+    .post(PelangganVerification, PelangganController.transaksi_controller.makeTransaksi);
+
+
 };
 
