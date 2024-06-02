@@ -12,7 +12,7 @@ exports.showRiwayat = async (req, res) => {
         queryParams.push(status_pesanan);
     }
     const qShowRiwayat = `SELECT ps.id_pemesanan, ps.jumlah_sepatu, ps.catatan_pelanggan, ps.longitude,
-                            ps.latitude, ps.status_pemesanan, ps.created_at AS tanggal_pemesanan,
+                            ps.latitude, ps.status_pemesanan, ps.created_at AS tanggal_pemesanan, ps.total_biaya,
                             l.nama_layanan, l.deskripsi, l.harga, t.tanggal_masuk, t.tanggal_keluar,
                             pb.bukti_pembayaran, pb.metode_pembayaran, pb.created_at AS tanggal_pembayaran,
                             pl.nama, pl.alamat, pl.email, pl.no_telepon, pl.foto_profil
@@ -49,11 +49,13 @@ exports.showRiwayat = async (req, res) => {
                     id_pemesanan: row.id_pemesanan,
                     jumlah_sepatu: row.jumlah_sepatu,
                     catatan_pelanggan: row.catatan_pelanggan,
+                    total_biaya: row.total_biaya,
                     lokasi: {
                         longitude: row.longitude,
                         latitude: row.latitude,
                         url_google_map
                     },
+                    kode_status_pemesanan: row.status_pemesanan,
                     status_pemesanan: status_text,
                     tanggal_pemesanan: row.tanggal_pemesanan,
                     layanan: {
@@ -97,7 +99,7 @@ exports.showRiwayatId = async (req, res) => {
                 return res.status(404).json({ status: 404, message: `Tidak ada data` })
             } else {
                 const qShowRiwayatId = `SELECT ps.id_pemesanan, ps.jumlah_sepatu, ps.catatan_pelanggan, ps.longitude,
-                                        ps.latitude, ps.status_pemesanan, ps.created_at AS tanggal_pemesanan,
+                                        ps.latitude, ps.status_pemesanan, ps.created_at AS tanggal_pemesanan, ps.total_biaya,
                                         l.nama_layanan, l.deskripsi, l.harga, t.tanggal_masuk, t.tanggal_keluar,
                                         pb.bukti_pembayaran, pb.metode_pembayaran, pb.created_at AS tanggal_pembayaran,
                                         pl.nama, pl.alamat, pl.email, pl.no_telepon, pl.foto_profil
@@ -132,11 +134,13 @@ exports.showRiwayatId = async (req, res) => {
                                 id_pemesanan: row.id_pemesanan,
                                 jumlah_sepatu: row.jumlah_sepatu,
                                 catatan_pelanggan: row.catatan_pelanggan,
+                                total_biaya: row.total_biaya,
                                 lokasi: {
                                     longitude: row.longitude,
                                     latitude: row.latitude,
                                     url_google_map
                                 },
+                                kode_status_pemesanan: row.status_pemesanan,
                                 status_pemesanan: status_text,
                                 tanggal_pemesanan: row.tanggal_pemesanan,
                                 layanan: {

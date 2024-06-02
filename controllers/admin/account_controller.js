@@ -17,7 +17,10 @@ exports.login = async (req, res) => {
     var query = "SELECT id_admin FROM ?? WHERE ??=? AND ??=?";
     var table = ["admin", "password", md5(post.password), "username", post.username];
 
-    console.log(post)
+
+    if (!post.username || !post.password) {
+        return res.status(400).json({ status: 400, message: `Username & Password tidak boleh kosong` })
+    }
 
     query = mysql.format(query, table);
     connection.query(query, function (error, rows) {
@@ -25,12 +28,9 @@ exports.login = async (req, res) => {
             console.log(error)
         } else {
 
-            if (rows.length == 0) {
+            if (rows.length == 0) {            
 
-                res.json({
-                    "Error": true,
-                    "Message": "Username or Password doesn't match!"
-                })
+                return res.status(400).json({ error: true, status: 400, message: `Username / password salah` })
 
             } else if (rows.length == 1) {
 
