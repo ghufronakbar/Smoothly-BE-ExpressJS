@@ -20,6 +20,7 @@ routesUser(app);
 
 app.use('/images/profile', express.static(path.join(__dirname, '../images/profile')));
 app.use('/images/bukti-pembayaran', express.static(path.join(__dirname, '../images/bukti-pembayaran')));
+app.use('/images/default', express.static(path.join(__dirname, '../images/default')));
 
 app.listen(process.env.PORT, () => {
   console.log(`Server started on port ${process.env.PORT}`);  

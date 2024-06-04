@@ -18,7 +18,7 @@ module.exports = function (app) {
   app.route(`/api/admin/profile/password`)
     .put(AdminVerification, AdminController.account_controller.editPassword);
 
-    app.route(`/api/admin/location`)
+  app.route(`/api/admin/location`)
     .put(AdminVerification, AdminController.account_controller.editLocation);
 
 
@@ -56,6 +56,13 @@ module.exports = function (app) {
 
   app.route(`/api/admin/transaksi/finish/:id_pemesanan`)
     .put(AdminVerification, AdminController.transaksi_controller.finishTransaksi);
+
+  // PELANGGAN CONTROLLER
+  app.route(`/api/admin/pelanggan`)
+    .get(AdminVerification, AdminController.pelanggan_controller.showPelanggan);
+
+  app.route(`/api/admin/pelanggan/:id_pelanggan`)
+    .get(AdminVerification, AdminController.pelanggan_controller.showPelangganId);
 
 };
 
