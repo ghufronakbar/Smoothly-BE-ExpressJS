@@ -120,8 +120,11 @@ exports.makeTransaksi = async (req, res) => {
               }
               const distance = calculateDistance(parseFloat(toko_latitude), parseFloat(toko_longitude), parseFloat(latitude), parseFloat(longitude));
               const distanceRounding = distance.toFixed(2)
-              const shippingCost = distanceRounding * 1000
+              let shippingCost = distanceRounding * 1000
 
+              if(jumlah_sepatu>1){
+                shippingCost = 0
+              }
 
               const qLayanan = `SELECT * FROM layanan WHERE id_layanan=?`
               connection.query(qLayanan, id_layanan,

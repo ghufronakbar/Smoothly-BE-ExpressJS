@@ -333,12 +333,35 @@
 							"response": []
 						}
 					]
+				},
+				{
+					"name": "Pelanggan",
+					"item": [
+						{
+							"name": "Pelanggan",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": "{{base_url}}{{api_admin}}/pelanggan"
+							},
+							"response": []
+						},
+						{
+							"name": "Pelanggan Id",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": "{{base_url}}{{api_admin}}/pelanggan/1"
+							},
+							"response": []
+						}
+					]
 				}
 			],
 			"auth": {
 				"type": "bearer",
 				"bearer": {
-					"token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZF9hZG1pbiI6MSwiaWF0IjoxNzE3MDI5ODMxLCJleHAiOjE3MTcwMzEyNzF9.XFP6gC9kxwXZc6sXInWScfkNzjY0ESt0BmxU-ACQEOM"
+					"token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZF9hZG1pbiI6MSwiaWF0IjoxNzE3NDg4MDM2LCJleHAiOjE3MTc0ODk0NzZ9.CNpfqV5L7H6rDKXCtKfw9WgCnu6lOqsbFACqEdH0H5c"
 				}
 			},
 			"event": [
@@ -380,12 +403,12 @@
 									"urlencoded": [
 										{
 											"key": "email",
-											"value": "budi.santoso@example.com",
+											"value": "sasha@example.com",
 											"type": "text"
 										},
 										{
 											"key": "password",
-											"value": "123",
+											"value": "sasha",
 											"type": "text"
 										}
 									]
@@ -625,12 +648,12 @@
 									"urlencoded": [
 										{
 											"key": "id_layanan",
-											"value": "3",
+											"value": "1",
 											"type": "text"
 										},
 										{
 											"key": "jumlah_sepatu",
-											"value": "5",
+											"value": "2",
 											"type": "text"
 										},
 										{
@@ -665,16 +688,16 @@
 										{
 											"key": "bukti_pembayaran",
 											"type": "file",
-											"src": "/C:/Users/lanst/OneDrive/Pictures/wpjay.jpg"
+											"src": "/C:/Projek/Smoothly/smoothly-be-express/images/bukti-pembayaran/bukti_transfer_7.jpg"
 										},
 										{
 											"key": "metode_pembayaran",
-											"value": "BCA",
+											"value": "COD",
 											"type": "text"
 										}
 									]
 								},
-								"url": "{{base_url}}{{api_pelanggan}}/transaksi/pay/14"
+								"url": "{{base_url}}{{api_pelanggan}}/transaksi/pay/13"
 							},
 							"response": []
 						}
@@ -684,7 +707,7 @@
 			"auth": {
 				"type": "bearer",
 				"bearer": {
-					"token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZF9wZWxhbmdnYW4iOjEsImlhdCI6MTcxNzAyODgzOCwiZXhwIjoxNzE3MDM0NTk4fQ.l9bUYy9rwlloJj2NwbHrm__hAf4lo-6HJVWhDzamFUk"
+					"token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZF9wZWxhbmdnYW4iOjUsImlhdCI6MTcxNzQ4ODk0MiwiZXhwIjoxNzE3NDk0NzAyfQ.noloGk1eOyTic5iQ5E7NKvhGyq0AVK1VJNWBuZEhXWc"
 				}
 			},
 			"event": [

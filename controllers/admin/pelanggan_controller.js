@@ -9,6 +9,7 @@ exports.showPelanggan = async (req, res) => {
     pl.alamat, 
     pl.no_telepon, 
     pl.foto_profil,
+    pl.email,    
     pl.created_at AS waktu_registrasi, 
     COUNT(CASE WHEN ps.status_pemesanan = 4 THEN ps.id_pemesanan ELSE NULL END) AS total_pemesanan, 
     SUM(CASE WHEN ps.status_pemesanan = 4 THEN ps.jumlah_sepatu ELSE 0 END) AS total_sepatu,
@@ -25,6 +26,7 @@ GROUP BY
     pl.alamat, 
     pl.no_telepon, 
     pl.foto_profil, 
+    pl.email,
     pl.created_at;
                           `;
     connection.query(qShowRiwayat, (error, rows) => {
@@ -39,6 +41,7 @@ GROUP BY
                     nama: row.nama,
                     alamat: row.alamat,
                     no_telepon: row.no_telepon,
+                    email: row.email,
                     foto_profil: row.foto_profil ? process.env.BASE_URL + `/images/profile/` + row.foto_profil : process.env.BASE_URL + `/images/default/user.jpg`,
                     waktu_registrasi: row.waktu_registrasi,
                     pemesanan: {
@@ -61,6 +64,7 @@ exports.showPelangganId = async (req, res) => {
     pl.alamat, 
     pl.no_telepon, 
     pl.foto_profil,
+    pl.email,
     pl.created_at AS waktu_registrasi, 
     COUNT(CASE WHEN ps.status_pemesanan = 4 THEN ps.id_pemesanan ELSE NULL END) AS total_pemesanan, 
     SUM(CASE WHEN ps.status_pemesanan = 4 THEN ps.jumlah_sepatu ELSE 0 END) AS total_sepatu,
@@ -78,6 +82,7 @@ GROUP BY
     pl.alamat, 
     pl.no_telepon, 
     pl.foto_profil, 
+    pl.email,
     pl.created_at;
                           `;
     connection.query(qShowRiwayat, id_pelanggan, (error, rows) => {
@@ -92,6 +97,7 @@ GROUP BY
                     nama: row.nama,
                     alamat: row.alamat,
                     no_telepon: row.no_telepon,
+                    email: row.email,
                     foto_profil: row.foto_profil ? process.env.BASE_URL + `/images/profile/` + row.foto_profil : process.env.BASE_URL + `/images/default/user.jpg`,
                     waktu_registrasi: row.waktu_registrasi,
                     pemesanan: {

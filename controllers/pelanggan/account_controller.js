@@ -138,7 +138,7 @@ exports.profile = async (req, res) => {
           alamat: row.alamat,
           email: row.email,
           no_telepon: row.no_telepon,
-          foto_profil: row.foto_profil ? process.env.BASE_URL + `/images/profile/` + row.foto_profil : process.env.BASE_URL + `/images/profile/default_user.png`,
+          foto_profil: row.foto_profil ? process.env.BASE_URL + `/images/profile/` + row.foto_profil : process.env.BASE_URL + `/images/default/user.png`,
           created_at: row.created_at,
           updated_at: row.updated_at
         }));
