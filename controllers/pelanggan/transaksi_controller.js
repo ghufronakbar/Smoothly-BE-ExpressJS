@@ -40,10 +40,6 @@ exports.payTransaksi = async (req, res) => {
     const { metode_pembayaran } = req.body;
     const bukti_pembayaran = req.file ? req.file.filename : null;
 
-    if(!bukti_pembayaran){
-      return res.status(400).json({ status: 400, message: 'Bukti pembayaran tidak ada.' });
-    }
-
     const qSetStatusPemesanan = `UPDATE pemesanan SET status_pemesanan=1 WHERE id_pemesanan=?`
     connection.query(qSetStatusPemesanan, id_pemesanan,
       (error, rows) => {
@@ -51,18 +47,33 @@ exports.payTransaksi = async (req, res) => {
           console.log(error);
           return res.status(500).json({ status: 500, message: "Internal Server Error" });
         } else {
-          const qInsertPembayaran = `INSERT INTO pembayaran(metode_pembayaran,bukti_pembayaran,id_pemesanan) VALUES(?,?,?)`
-          const vInsertPembayaran = [metode_pembayaran,bukti_pembayaran,id_pemesanan]
-          connection.query(qInsertPembayaran,vInsertPembayaran,
-            (error, rows) => {
-              if (error) {
-                console.log(error);
-                return res.status(500).json({ status: 500, message: "Internal Server Error" });
-              } else {
-                return res.status(200).json({ status: 200, message:`Pembayaran berhasil, tunggu konfirmasi admin` })
+          if (!bukti_pembayaran) {
+            const qInsertPembayaran = `INSERT INTO pembayaran(metode_pembayaran,id_pemesanan) VALUES(?,?)`
+            const vInsertPembayaran = [metode_pembayaran, id_pemesanan]
+            connection.query(qInsertPembayaran, vInsertPembayaran,
+              (error, rows) => {
+                if (error) {
+                  console.log(error);
+                  return res.status(500).json({ status: 500, message: "Internal Server Error" });
+                } else {
+                  return res.status(200).json({ status: 200, message: `Pesanan dengan COD, tunggu konfirmasi admin` })
+                }
               }
-            }
-          )
+            )
+          } else {
+            const qInsertPembayaran = `INSERT INTO pembayaran(metode_pembayaran,bukti_pembayaran,id_pemesanan) VALUES(?,?,?)`
+            const vInsertPembayaran = [metode_pembayaran, bukti_pembayaran, id_pemesanan]
+            connection.query(qInsertPembayaran, vInsertPembayaran,
+              (error, rows) => {
+                if (error) {
+                  console.log(error);
+                  return res.status(500).json({ status: 500, message: "Internal Server Error" });
+                } else {
+                  return res.status(200).json({ status: 200, message: `Pembayaran berhasil, tunggu konfirmasi admin` })
+                }
+              }
+            )
+          }
         }
       }
     )
